@@ -1,38 +1,48 @@
-'use client';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import type { Metadata } from 'next';
+import { z } from 'zod';
+import { PageContainer } from '@/components/ui/page-container';
+import { columns } from '@/features/tasks/components/columns';
+import { DataTable } from '@/features/tasks/components/data-table';
+import { UserNav } from '@/features/tasks/components/user-nav';
+import { taskSchema } from '@/features/tasks/data/schema';
 
-import { useMutation, useQuery } from 'convex/react';
-import { api } from '../convex/_generated/api';
+export const metadata: Metadata = {
+  title: 'Tasks',
+  description: 'A task and issue tracker build using Tanstack Table.',
+};
 
-export default function Home() {
-  const tasks = useQuery(api.tasks.get);
-  const addNewTask = useMutation(api.myFunctions.create);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const text = formData.get('text') as string;
-    addNewTask({ text });
-  };
+// Simulate a database read for tasks.
+async function getTasks() {
+  const data = await fs.readFile(
+    path.join(process.cwd(), 'features/tasks/data/tasks.json')
+  );
+
+  const tasks = JSON.parse(data.toString());
+
+  return z.array(taskSchema).parse(tasks);
+}
+
+export default async function TaskPage() {
+  const tasks = await getTasks();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      {/* to create new task */}
-      <form
-        className="flex flex-col items-center justify-center gap-4"
-        onSubmit={handleSubmit}
-      >
-        <input
-          className="rounded-md border border-gray-300 p-2"
-          name="text"
-          type="text"
-        />
-        <button className="rounded-md bg-blue-500 p-2 text-white" type="submit">
-          Add
-        </button>
-      </form>
-      <h1 className="font-bold text-4xl">Tasks</h1>
-      {tasks?.map(({ _id, text }) => (
-        <div key={_id}>{text}</div>
-      ))}
-    </main>
+    <PageContainer className="py-8">
+      <div className="flex h-full flex-1 flex-col gap-8">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <h2 className="font-bold text-2xl tracking-tight">Welcome back!</h2>
+            <p className="text-muted-foreground">
+              Here&apos;s a list of your tasks for this month!
+            </p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <UserNav />
+          </div>
+        </div>
+        <DataTable columns={columns} data={tasks} />
+      </div>
+    </PageContainer>
   );
 }
