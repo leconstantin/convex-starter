@@ -5,6 +5,9 @@
     "rules": {
       "suspicious": {
         "noExplicitAny": "warn"
+      },
+      "performance": {
+        "noNamespaceImport": "warn"
       }
     }
   }
