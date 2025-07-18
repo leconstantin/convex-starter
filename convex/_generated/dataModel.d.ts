@@ -8,7 +8,7 @@
  * @module
  */
 
-import { AnyDataModel } from "convex/server";
+import type { AnyDataModel } from "convex/server";
 import type { GenericId } from "convex/values";
 
 /**

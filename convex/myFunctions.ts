@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
-import { v } from "convex/values";
+import { v } from 'convex/values';
+import { mutation } from './_generated/server';
 
 // to create new task
 export const create = mutation({
@@ -7,7 +7,7 @@ export const create = mutation({
     text: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("tasks", {
+    return await ctx.db.insert('tasks', {
       text: args.text,
       isCompleted: false,
     });
@@ -17,7 +17,7 @@ export const create = mutation({
 // to update task
 export const update = mutation({
   args: {
-    id: v.id("tasks"),
+    id: v.id('tasks'),
     text: v.string(),
     isCompleted: v.boolean(),
   },
@@ -32,7 +32,7 @@ export const update = mutation({
 // to delete task
 export const remove = mutation({
   args: {
-    id: v.id("tasks"),
+    id: v.id('tasks'),
   },
   handler: async (ctx, args) => {
     return await ctx.db.delete(args.id);
