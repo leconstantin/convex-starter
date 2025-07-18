@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import type { Metadata } from 'next';
 import { z } from 'zod';
+import { ModeSwitcher } from '@/components/ui/mode-switcher';
 import { PageContainer } from '@/components/ui/page-container';
 import { columns } from '@/features/tasks/components/columns';
 import { DataTable } from '@/features/tasks/components/data-table';
@@ -37,8 +38,9 @@ export default async function TaskPage() {
               Here&apos;s a list of your tasks for this month!
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <UserNav />
+            <ModeSwitcher />
           </div>
         </div>
         <DataTable columns={columns} data={tasks} />
