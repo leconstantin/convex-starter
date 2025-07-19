@@ -48,7 +48,57 @@ export const update = mutation({
     return await ctx.db.patch(id, updates);
   },
 });
+// update label
+export const updateLabel = mutation({
+  args: {
+    id: v.id("todos"),
+    label: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { id, label } = args;
+    const todo = await ctx.db.get(id);
 
+    if (!todo) {
+      throw new Error("Todo not found or not authorized");
+    }
+
+    return await ctx.db.patch(id, { label });
+  },
+});
+// update status
+export const updateStatus = mutation({
+  args: {
+    id: v.id("todos"),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { id, status } = args;
+    const todo = await ctx.db.get(id);
+
+    if (!todo) {
+      throw new Error("Todo not found or not authorized");
+    }
+
+    return await ctx.db.patch(id, { status });
+  },
+});
+// update priority
+export const updatePriority = mutation({
+  args: {
+    id: v.id("todos"),
+    priority: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { id, priority } = args;
+    const todo = await ctx.db.get(id);
+
+    if (!todo) {
+      throw new Error("Todo not found or not authorized");
+    }
+
+    return await ctx.db.patch(id, { priority });
+  },
+});
 export const remove = mutation({
   args: { id: v.id("todos") },
   handler: async (ctx, args) => {

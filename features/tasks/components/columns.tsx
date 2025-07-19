@@ -1,10 +1,9 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-
+import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-
 import { labels, priorities, statuses } from '../data/data';
 import type { TableTasksTypes } from '../data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
@@ -68,6 +67,24 @@ export const columns: ColumnDef<TableTasksTypes>[] = [
           </span>
         </div>
       );
+    },
+  },
+  // based on due date add like in next two days just when am going to do task
+  {
+    accessorKey: 'dueDate',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Due Date" />
+    ),
+    cell: ({ row }) => {
+      const dueDate = row.getValue('dueDate') as number;
+      const dateObj = new Date(dueDate);
+
+      // const relativeTime = formatDistanceToNow(dateObj, { addSuffix: true });
+      const relativeTime = Number.isNaN(dateObj.getTime())
+        ? 'Invalid date'
+        : formatDistanceToNow(dateObj, { addSuffix: true });
+
+      return <div className="flex space-x-2">{relativeTime}</div>;
     },
   },
   {

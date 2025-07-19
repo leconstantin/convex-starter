@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
-import { labels } from '../data/data';
+import { labels, priorities, statuses } from '../data/data';
 import { tableTasksSchema } from '../data/schema';
 import { TaskForm } from '../task-form';
 
@@ -34,6 +34,10 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const task = tableTasksSchema.parse(row.original);
   const deleteTodo = useMutation(api.todos.remove);
+  const updateLabel = useMutation(api.todos.updateLabel);
+  const updateStatus = useMutation(api.todos.updateStatus);
+  const updatePriority = useMutation(api.todos.updatePriority);
+
   const [edit, setEdit] = React.useState(false);
   const handleDelete = async (id: Id<'todos'>) => {
     try {
@@ -41,6 +45,30 @@ export function DataTableRowActions<TData>({
       toast.success('Todo deleted!');
     } catch {
       toast.error('Failed to delete todo');
+    }
+  };
+  const handleUpdateLabel = async (id: Id<'todos'>, label: string) => {
+    try {
+      await updateLabel({ id, label });
+      toast.success('Todo updated!');
+    } catch {
+      toast.error('Failed to update todo');
+    }
+  };
+  const handleUpdateStatus = async (id: Id<'todos'>, status: string) => {
+    try {
+      await updateStatus({ id, status });
+      toast.success('Todo updated!');
+    } catch {
+      toast.error('Failed to update todo');
+    }
+  };
+  const handleUpdatePriority = async (id: Id<'todos'>, priority: string) => {
+    try {
+      await updatePriority({ id, priority });
+      toast.success('Todo updated!');
+    } catch {
+      toast.error('Failed to update todo');
     }
   };
 
@@ -60,16 +88,59 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem onClick={() => setEdit(true)}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup value={task.label}>
+              <DropdownMenuRadioGroup
+                onValueChange={(value) =>
+                  handleUpdateLabel(task._id as Id<'todos'>, value)
+                }
+                value={task.label}
+              >
                 {labels.map((label) => (
                   <DropdownMenuRadioItem key={label.value} value={label.value}>
                     {label.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup
+                onValueChange={(value) =>
+                  handleUpdateStatus(task._id as Id<'todos'>, value)
+                }
+                value={task.status}
+              >
+                {statuses.map((status) => (
+                  <DropdownMenuRadioItem
+                    key={status.value}
+                    value={status.value}
+                  >
+                    {status.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Priority</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup
+                onValueChange={(value) =>
+                  handleUpdatePriority(task._id as Id<'todos'>, value)
+                }
+                value={task.priority}
+              >
+                {priorities.map((priority) => (
+                  <DropdownMenuRadioItem
+                    key={priority.value}
+                    value={priority.value}
+                  >
+                    {priority.label}
                   </DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
