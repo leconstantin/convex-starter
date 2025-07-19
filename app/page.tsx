@@ -17,20 +17,25 @@ export default async function TaskPage() {
   // i want to select
   return (
     <PageContainer className="py-8">
-      <div className="flex h-full flex-1 flex-col gap-8">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <h2 className="font-bold text-2xl tracking-tight">Welcome back!</h2>
-            <p className="hidden text-muted-foreground md:block">
-              Here&apos;s a list of your tasks for this month!
-            </p>
+      <div className="flex h-full flex-1 flex-col gap-20 md:gap-8">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <h2 className="font-bold text-2xl tracking-tight">
+                Welcome back!
+              </h2>
+              <p className="hidden text-muted-foreground md:block">
+                Here&apos;s a list of your tasks for this month!
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {(await isAuthenticatedNextjs()) && <UserNav />}
+              <ModeSwitcher />
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            {(await isAuthenticatedNextjs()) && <UserNav />}
-            <ModeSwitcher />
-          </div>
+          <TaskForm />
         </div>
-        <TaskForm />
+
         <TodosTable />
       </div>
     </PageContainer>
