@@ -1,3 +1,4 @@
+import { isAuthenticatedNextjs } from '@convex-dev/auth/nextjs/server';
 import type { Metadata } from 'next';
 import { ModeSwitcher } from '@/components/ui/mode-switcher';
 import { PageContainer } from '@/components/ui/page-container';
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 // Simulate a database read for tasks.
 
-export default function TaskPage() {
+export default async function TaskPage() {
   // i want to select
   return (
     <PageContainer className="py-8">
@@ -25,7 +26,7 @@ export default function TaskPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <UserNav />
+            {(await isAuthenticatedNextjs()) && <UserNav />}
             <ModeSwitcher />
           </div>
         </div>

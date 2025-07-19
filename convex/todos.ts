@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -10,6 +11,10 @@ export const create = mutation({
     dueDate: v.number(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
     // i want to add my own id which increment by 1 each time task is created get my id called task_id 1 another 2 ,3 ..
     const task_id = await ctx.db.query("todos").order("desc").take(1);
     const id = task_id.length > 0 ? task_id[0].task_id + 1 : 1;
@@ -17,6 +22,7 @@ export const create = mutation({
     return await ctx.db.insert("todos", {
       task_id: id,
       ...args,
+      userId,
     });
   },
 });
@@ -24,7 +30,15 @@ export const create = mutation({
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("todos").order("desc").collect();
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+    return await ctx.db
+      .query("todos")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .order("desc")
+      .collect();
   },
 });
 
@@ -38,11 +52,19 @@ export const update = mutation({
     dueDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
     const { id, ...updates } = args;
-    const todo = await ctx.db.get(id);
 
-    if (!todo) {
-      throw new Error("Todo not found or not authorized");
+    // Verify the todo belongs to the user before updating
+    const existingTodo = await ctx.db.get(args.id);
+    if (!existingTodo) {
+      throw new Error("Todo not found");
+    }
+    if (existingTodo.userId !== userId) {
+      throw new Error("Unauthorized - this todo belongs to another user");
     }
 
     return await ctx.db.patch(id, updates);

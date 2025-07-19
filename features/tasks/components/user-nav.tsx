@@ -1,3 +1,5 @@
+import { convexAuthNextjsToken } from '@convex-dev/auth/nextjs/server';
+import { fetchQuery } from 'convex/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,25 +12,39 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { api } from '@/convex/_generated/api';
+import { SignOut } from '@/features/authentication/sign-out';
 import profileImg from '@/public/profile.svg';
 
-export function UserNav() {
+export async function UserNav() {
+  const user = await fetchQuery(
+    api.users.currentUser,
+    {},
+    { token: await convexAuthNextjsToken() }
+  );
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-9 w-9">
-            <AvatarImage alt="@shadcn" src={profileImg.src} />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarImage alt="@shadcn" src={user.image || profileImg.src} />
+            <AvatarFallback>
+              {user.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="font-medium text-sm leading-none">shadcn</p>
+            <p className="font-medium text-sm leading-none">{user.name}</p>
             <p className="text-muted-foreground text-xs leading-none">
-              m@example.com
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -49,10 +65,7 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <SignOut />
       </DropdownMenuContent>
     </DropdownMenu>
   );
