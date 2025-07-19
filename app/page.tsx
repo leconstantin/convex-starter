@@ -8,6 +8,7 @@ import { columns } from '@/features/tasks/components/columns';
 import { DataTable } from '@/features/tasks/components/data-table';
 import { UserNav } from '@/features/tasks/components/user-nav';
 import { taskSchema } from '@/features/tasks/data/schema';
+import { TaskForm } from '@/features/tasks/task-form';
 
 export const metadata: Metadata = {
   title: 'Tasks',
@@ -43,6 +44,7 @@ export default async function TaskPage() {
             <ModeSwitcher />
           </div>
         </div>
+        <TaskForm />
         <DataTable columns={columns} data={tasks} />
       </div>
     </PageContainer>
