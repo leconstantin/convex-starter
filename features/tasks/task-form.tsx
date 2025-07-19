@@ -42,30 +42,65 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { api } from '@/convex/_generated/api';
+import type { Id } from '@/convex/_generated/dataModel';
 import { cn } from '@/lib/utils';
 import { labels, priorities, statuses } from './data/data';
+import type { TableTasksTypes } from './data/schema';
 import { TodosFormSchema } from './schema';
 import type { TodosFormValuesType } from './types';
 
-export function TaskForm() {
-  // open and set
-  const [open, setOpen] = React.useState(false);
+// in this form you can also edit todos
+
+export function TaskForm({
+  todo,
+  editing,
+  open,
+  onOpenChange,
+}: {
+  todo?: TableTasksTypes;
+  editing?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const [internalOpen, setInternalOpen] = React.useState(false);
+
+  const isControlled =
+    typeof open === 'boolean' && typeof onOpenChange === 'function';
+  const actualOpen = isControlled ? open : internalOpen;
+  const setOpen = isControlled ? onOpenChange : setInternalOpen;
+
   // isLoading
   const [isLoading, setIsLoading] = React.useState(false);
   const createTodo = useMutation(api.todos.create);
+  const updateTodo = useMutation(api.todos.update);
   const form = useForm<TodosFormValuesType>({
     resolver: zodResolver(TodosFormSchema),
     defaultValues: {
-      title: '',
-      status: '',
-      label: '',
-      priority: '',
-      dueDate: undefined,
+      title: todo?.title || '',
+      status: todo?.status || '',
+      label: todo?.label || '',
+      priority: todo?.priority || '',
+      dueDate: todo?.dueDate ? new Date(todo.dueDate) : undefined,
     },
   });
   async function onSubmit(data: TodosFormValuesType) {
     setIsLoading(true);
     try {
+      if (editing && todo) {
+        await updateTodo({
+          id: todo._id as Id<'todos'>,
+          title: data.title,
+          status: data.status,
+          label: data.label,
+          priority: data.priority,
+          dueDate: data.dueDate.getTime(),
+        });
+
+        toast.success('Todo updated successfully!');
+        form.reset();
+        setOpen(false);
+        return;
+      }
       await createTodo({
         title: data.title,
         status: data.status,
@@ -84,19 +119,26 @@ export function TaskForm() {
       setIsLoading(false);
     }
   }
+  const btnText = editing ? 'Update' : 'Add';
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
+    <Dialog onOpenChange={setOpen} open={actualOpen}>
       <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">
-            <PlusCircle />
-            Add Task
-          </Button>
-        </DialogTrigger>
+        {!editing && (
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <PlusCircle />
+              Add Task
+            </Button>
+          </DialogTrigger>
+        )}
         <DialogContent className="sm:max-w-[425px] md:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Add Task</DialogTitle>
-            <DialogDescription>Add a new task to your list.</DialogDescription>
+            <DialogTitle>{editing ? 'Edit Task' : 'Add Task'}</DialogTitle>
+            <DialogDescription>
+              {editing
+                ? 'Edit your task and save it to your list.'
+                : 'Add a new task to your list.'}
+            </DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form
@@ -285,10 +327,10 @@ export function TaskForm() {
                   {isLoading ? (
                     <>
                       <LoaderCircleIcon className="mr-2 size-4 animate-spin" />
-                      Adding Task...
+                      {editing ? 'Updating...' : 'Adding...'}
                     </>
                   ) : (
-                    'Add Task'
+                    btnText
                   )}
                 </Button>
               </DialogFooter>

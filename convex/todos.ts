@@ -10,7 +10,12 @@ export const create = mutation({
     dueDate: v.number(),
   },
   handler: async (ctx, args) => {
+    // i want to add my own id which increment by 1 each time task is created get my id called task_id 1 another 2 ,3 ..
+    const task_id = await ctx.db.query("todos").order("desc").take(1);
+    const id = task_id.length > 0 ? task_id[0].task_id + 1 : 1;
+
     return await ctx.db.insert("todos", {
+      task_id: id,
       ...args,
     });
   },

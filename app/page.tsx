@@ -1,14 +1,9 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import type { Metadata } from 'next';
-import { z } from 'zod';
 import { ModeSwitcher } from '@/components/ui/mode-switcher';
 import { PageContainer } from '@/components/ui/page-container';
-import { columns } from '@/features/tasks/components/columns';
-import { DataTable } from '@/features/tasks/components/data-table';
 import { UserNav } from '@/features/tasks/components/user-nav';
-import { taskSchema } from '@/features/tasks/data/schema';
 import { TaskForm } from '@/features/tasks/task-form';
+import { TodosTable } from '@/features/tasks/todos-table';
 
 export const metadata: Metadata = {
   title: 'Tasks',
@@ -16,19 +11,9 @@ export const metadata: Metadata = {
 };
 
 // Simulate a database read for tasks.
-async function getTasks() {
-  const data = await fs.readFile(
-    path.join(process.cwd(), 'features/tasks/data/tasks.json')
-  );
 
-  const tasks = JSON.parse(data.toString());
-
-  return z.array(taskSchema).parse(tasks);
-}
-
-export default async function TaskPage() {
-  const tasks = await getTasks();
-
+export default function TaskPage() {
+  // i want to select
   return (
     <PageContainer className="py-8">
       <div className="flex h-full flex-1 flex-col gap-8">
@@ -45,7 +30,7 @@ export default async function TaskPage() {
           </div>
         </div>
         <TaskForm />
-        <DataTable columns={columns} data={tasks} />
+        <TodosTable />
       </div>
     </PageContainer>
   );

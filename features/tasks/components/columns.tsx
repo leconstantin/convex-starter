@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { labels, priorities, statuses } from '../data/data';
-import type { Task } from '../data/schema';
+import type { TableTasksTypes } from '../data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<TableTasksTypes>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -36,11 +36,13 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'id',
+    accessorKey: 'task_id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Task" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue('id')}</div>,
+    cell: ({ row }) => (
+      <div className="w-[80px]">TASK-{row.getValue('task_id')}</div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },

@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 const applicationTables = {
   todos: defineTable({
+    task_id: v.number(),
     title: v.string(),
     status: v.string(),
     label: v.string(),
