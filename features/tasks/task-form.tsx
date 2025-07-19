@@ -1,8 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from 'convex/react';
 import { format } from 'date-fns';
-import { CalendarIcon, PlusCircle } from 'lucide-react';
+import { CalendarIcon, LoaderCircleIcon, PlusCircle } from 'lucide-react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -39,33 +41,51 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { api } from '@/convex/_generated/api';
 import { cn } from '@/lib/utils';
 import { labels, priorities, statuses } from './data/data';
 import { TodosFormSchema } from './schema';
 import type { TodosFormValuesType } from './types';
 
 export function TaskForm() {
+  // open and set
+  const [open, setOpen] = React.useState(false);
+  // isLoading
+  const [isLoading, setIsLoading] = React.useState(false);
+  const createTodo = useMutation(api.todos.create);
   const form = useForm<TodosFormValuesType>({
     resolver: zodResolver(TodosFormSchema),
     defaultValues: {
       title: '',
-      status: 'todo',
-      label: 'bug',
-      priority: 'low',
+      status: '',
+      label: '',
+      priority: '',
       dueDate: undefined,
     },
   });
-  function onSubmit(data: TodosFormValuesType) {
-    toast('You submitted the following values', {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(data: TodosFormValuesType) {
+    setIsLoading(true);
+    try {
+      await createTodo({
+        title: data.title,
+        status: data.status,
+        label: data.label,
+        priority: data.priority,
+        dueDate: data.dueDate.getTime(),
+      });
+
+      toast.success('Todo created successfully!');
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      toast.error('Failed to create todo');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
   return (
-    <Dialog>
+    <Dialog onOpenChange={setOpen} open={open}>
       <form>
         <DialogTrigger asChild>
           <Button variant="outline">
@@ -236,7 +256,7 @@ export function TaskForm() {
                           <Calendar
                             captionLayout="dropdown"
                             disabled={(selectedDate) =>
-                              selectedDate > new Date() ||
+                              selectedDate < new Date() ||
                               selectedDate < new Date('1900-01-01')
                             }
                             mode="single"
@@ -256,9 +276,21 @@ export function TaskForm() {
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button disabled={isLoading} variant="outline">
+                    Cancel
+                  </Button>
                 </DialogClose>
-                <Button type="submit"> Add Task</Button>
+                <Button disabled={isLoading} type="submit">
+                  {' '}
+                  {isLoading ? (
+                    <>
+                      <LoaderCircleIcon className="mr-2 size-4 animate-spin" />
+                      Adding Task...
+                    </>
+                  ) : (
+                    'Add Task'
+                  )}
+                </Button>
               </DialogFooter>
             </form>
           </Form>

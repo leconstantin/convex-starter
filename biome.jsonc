@@ -4,7 +4,8 @@
   "linter": {
     "rules": {
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noConsole": "warn"
       },
       "performance": {
         "noNamespaceImport": "warn"
