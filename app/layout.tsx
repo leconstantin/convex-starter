@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 import './globals.css';
 import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
+import { Analytics } from '@vercel/analytics/next';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { ConvexClientProvider } from './ConvexClientProvider';
@@ -34,6 +35,7 @@ export default function RootLayout({
             >
               {children}
               <Toaster closeButton richColors />
+              <Analytics />
             </ThemeProvider>
           </ConvexClientProvider>
         </body>
