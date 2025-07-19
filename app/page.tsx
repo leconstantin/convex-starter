@@ -1,6 +1,5 @@
 import { isAuthenticatedNextjs } from '@convex-dev/auth/nextjs/server';
 import type { Metadata } from 'next';
-import { ModeSwitcher } from '@/components/ui/mode-switcher';
 import { PageContainer } from '@/components/ui/page-container';
 import { UserNav } from '@/features/tasks/components/user-nav';
 import { TaskForm } from '@/features/tasks/task-form';
@@ -28,9 +27,8 @@ export default async function TaskPage() {
                 Here&apos;s a list of your tasks for this month!
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               {(await isAuthenticatedNextjs()) && <UserNav />}
-              <ModeSwitcher />
             </div>
           </div>
           <TaskForm />
