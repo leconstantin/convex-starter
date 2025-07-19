@@ -130,7 +130,7 @@ export function TaskForm({
             </Button>
           </DialogTrigger>
         )}
-        <DialogContent className="sm:max-w-[425px] md:max-w-2xl">
+        <DialogContent className="sm:max-w-[425px] md:max-w-2xl ">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Task' : 'Add Task'}</DialogTitle>
             <DialogDescription>
