@@ -21,7 +21,7 @@ export default async function TaskPage() {
         <div className="flex items-center justify-between gap-2">
           <div>
             <h2 className="font-bold text-2xl tracking-tight">Welcome back!</h2>
-            <p className="text-muted-foreground">
+            <p className="hidden text-muted-foreground md:block">
               Here&apos;s a list of your tasks for this month!
             </p>
           </div>

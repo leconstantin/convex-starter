@@ -131,7 +131,7 @@ export function TaskForm({
             </Button>
           </DialogTrigger>
         )}
-        <DialogContent className="sm:max-w-[425px] md:max-w-2xl ">
+        <DialogContent className="w-full sm:max-w-[425px] md:max-w-2xl ">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Task' : 'Add Task'}</DialogTitle>
             <DialogDescription>
@@ -165,7 +165,7 @@ export function TaskForm({
                   </FormItem>
                 )}
               />
-              <div className="flex w-full items-center gap-2">
+              <div className="flex w-full flex-col gap-4 md:flex-row md:items-center">
                 <FormField
                   control={form.control}
                   name="status"
@@ -193,7 +193,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="hidden md:block">
                         This is the status of your task.
                       </FormDescription>
                       <FormMessage />
@@ -227,7 +227,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="hidden md:block">
                         This is the label of your task.
                       </FormDescription>
                       <FormMessage />
@@ -235,7 +235,7 @@ export function TaskForm({
                   )}
                 />
               </div>
-              <div className="flex w-full items-center gap-2">
+              <div className="flex w-full flex-col gap-4 md:flex-row md:items-center">
                 <FormField
                   control={form.control}
                   name="priority"
@@ -263,7 +263,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="hidden md:block">
                         This is the priority of your task.
                       </FormDescription>
                       <FormMessage />
@@ -308,7 +308,7 @@ export function TaskForm({
                           />
                         </PopoverContent>
                       </Popover>
-                      <FormDescription>
+                      <FormDescription className="hidden md:block">
                         This is the due date of your task.
                       </FormDescription>
                       <FormMessage />
