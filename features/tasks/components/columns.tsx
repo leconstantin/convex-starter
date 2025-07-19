@@ -58,7 +58,11 @@ export const columns: ColumnDef<TableTasksTypes>[] = [
 
       return (
         <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+          {label && (
+            <Badge className="bg-blue-500 text-white dark:bg-blue-600">
+              {label.label}
+            </Badge>
+          )}
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue('title')}
           </span>

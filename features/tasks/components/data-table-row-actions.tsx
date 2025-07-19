@@ -39,9 +39,8 @@ export function DataTableRowActions<TData>({
     try {
       await deleteTodo({ id });
       toast.success('Todo deleted!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete todo');
-      console.error(error);
     }
   };
 

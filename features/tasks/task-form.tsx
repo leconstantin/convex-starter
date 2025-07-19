@@ -112,9 +112,8 @@ export function TaskForm({
       toast.success('Todo created successfully!');
       form.reset();
       setOpen(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to create todo');
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -221,6 +220,7 @@ export function TaskForm({
                         <SelectContent className="w-full">
                           {labels.map((label) => (
                             <SelectItem key={label.value} value={label.value}>
+                              <label.icon className="mr-2 size-4 text-muted-foreground" />
                               {label.label}
                             </SelectItem>
                           ))}
