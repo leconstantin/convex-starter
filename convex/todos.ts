@@ -1,6 +1,37 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
+
+async function requireUser(ctx: QueryCtx | MutationCtx) {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  return userId;
+}
+
+// Helper: Ensure the todo belongs to the user
+import type { Id } from "./_generated/dataModel";
+
+async function assertTodoOwner({
+  ctx,
+  id,
+  userId,
+}: {
+  ctx: QueryCtx | MutationCtx;
+  id: Id<"todos">;
+  userId: string;
+}) {
+  const todo = await ctx.db.get(id);
+  if (!todo) {
+    throw new Error("Todo not found");
+  }
+  if (todo.userId !== userId) {
+    throw new Error("Unauthorized - this todo belongs to another user");
+  }
+  return todo;
+}
 
 export const create = mutation({
   args: {
@@ -11,11 +42,7 @@ export const create = mutation({
     dueDate: v.number(),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-    // i want to add my own id which increment by 1 each time task is created get my id called task_id 1 another 2 ,3 ..
+    const userId = await requireUser(ctx);
     const task_id = await ctx.db.query("todos").order("desc").take(1);
     const id = task_id.length > 0 ? task_id[0].task_id + 1 : 1;
 
@@ -30,10 +57,7 @@ export const create = mutation({
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = await requireUser(ctx);
     return await ctx.db
       .query("todos")
       .filter((q) => q.eq(q.field("userId"), userId))
@@ -52,20 +76,11 @@ export const update = mutation({
     dueDate: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
+    const userId = await requireUser(ctx);
     const { id, ...updates } = args;
 
     // Verify the todo belongs to the user before updating
-    const existingTodo = await ctx.db.get(args.id);
-    if (!existingTodo) {
-      throw new Error("Todo not found");
-    }
-    if (existingTodo.userId !== userId) {
-      throw new Error("Unauthorized - this todo belongs to another user");
-    }
+    await assertTodoOwner({ ctx, id, userId });
 
     return await ctx.db.patch(id, updates);
   },
@@ -78,11 +93,8 @@ export const updateLabel = mutation({
   },
   handler: async (ctx, args) => {
     const { id, label } = args;
-    const todo = await ctx.db.get(id);
-
-    if (!todo) {
-      throw new Error("Todo not found or not authorized");
-    }
+    const userId = await requireUser(ctx);
+    await assertTodoOwner({ ctx, id, userId });
 
     return await ctx.db.patch(id, { label });
   },
@@ -95,11 +107,8 @@ export const updateStatus = mutation({
   },
   handler: async (ctx, args) => {
     const { id, status } = args;
-    const todo = await ctx.db.get(id);
-
-    if (!todo) {
-      throw new Error("Todo not found or not authorized");
-    }
+    const userId = await requireUser(ctx);
+    await assertTodoOwner({ ctx, id, userId });
 
     return await ctx.db.patch(id, { status });
   },
@@ -112,11 +121,8 @@ export const updatePriority = mutation({
   },
   handler: async (ctx, args) => {
     const { id, priority } = args;
-    const todo = await ctx.db.get(id);
-
-    if (!todo) {
-      throw new Error("Todo not found or not authorized");
-    }
+    const userId = await requireUser(ctx);
+    await assertTodoOwner({ ctx, id, userId });
 
     return await ctx.db.patch(id, { priority });
   },
@@ -124,11 +130,8 @@ export const updatePriority = mutation({
 export const remove = mutation({
   args: { id: v.id("todos") },
   handler: async (ctx, args) => {
-    const todo = await ctx.db.get(args.id);
-
-    if (!todo) {
-      throw new Error("Todo not found");
-    }
+    const userId = await requireUser(ctx);
+    await assertTodoOwner({ ctx, id: args.id, userId });
 
     return await ctx.db.delete(args.id);
   },
