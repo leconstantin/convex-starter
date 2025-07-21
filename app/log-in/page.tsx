@@ -30,7 +30,7 @@ export default function SignIn() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-muted/20 px-4 py-12 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-sm shadow-xl">
+      <Card className="w-full max-w-sm rounded-lg shadow-sm">
         <CardHeader className="text-center">
           <CardTitle className="font-semibold text-2xl tracking-tight">
             Welcome Back
