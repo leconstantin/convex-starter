@@ -1,5 +1,11 @@
+/** biome-ignore-all lint/nursery/noAwaitInLoop: <explanation> */
 import { authTables, getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
+import {
+  type MutationCtx,
+  mutation,
+  type QueryCtx,
+  query,
+} from "./_generated/server";
 
 export async function requireUser(ctx: QueryCtx | MutationCtx) {
   const userId = await getAuthUserId(ctx);
@@ -25,7 +31,9 @@ export const deleteUser = mutation({
 
     // Get user's identity (from Convex Auth)
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
     const tokenIdentifier = identity.tokenIdentifier;
 
     // Delete all todos linked to this user
@@ -34,9 +42,8 @@ export const deleteUser = mutation({
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .collect();
 
-    for (const todo of todos) {
-      await ctx.db.delete(todo._id);
-    }
+    const todoDeletePromises = todos.map((todo) => ctx.db.delete(todo._id));
+    await Promise.all(todoDeletePromises);
 
     // Delete from your custom users table
     const userDoc = await ctx.db
@@ -54,7 +61,9 @@ export const deleteUser = mutation({
         .query(table as any)
         .filter((q) => q.eq(q.field("tokenIdentifier"), tokenIdentifier))
         .collect();
-      for (const doc of docs) await ctx.db.delete(doc._id);
+      for (const doc of docs) {
+        await ctx.db.delete(doc._id);
+      }
     }
 
     return { success: true };

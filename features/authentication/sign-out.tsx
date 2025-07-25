@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useAuthActions } from '@convex-dev/auth/react';
-import { useState } from 'react';
-import LoadingButton from '@/components/loading-button';
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useState } from "react";
+import LoadingButton from "@/components/loading-button";
 
 export function SignOut() {
   const { signOut } = useAuthActions();

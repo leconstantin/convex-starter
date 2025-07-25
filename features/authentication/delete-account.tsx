@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { api } from "@/convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { api } from "@/convex/_generated/api";
 
 export function DeleteAccountButton() {
   const { signOut } = useAuthActions();
@@ -39,11 +39,11 @@ export function DeleteAccountButton() {
 
   return (
     <Button
-      variant="destructive"
-      onClick={handleDelete}
-      disabled={isDeleting}
       className="w-full"
+      disabled={isDeleting}
+      onClick={handleDelete}
       size={"sm"}
+      variant="destructive"
     >
       {isDeleting ? "Deleting…" : "Delete Account"}
     </Button>

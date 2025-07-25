@@ -1,5 +1,16 @@
 "use client";
 
+import { useAuthActions } from "@convex-dev/auth/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ConvexError } from "convex/values";
+import { InfoIcon } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,27 +38,21 @@ import {
 import { INVALID_PASSWORD } from "@/convex/errors";
 import { type TupFormSchema, upFormSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ConvexError } from "convex/values";
-import { InfoIcon } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { toast } from "sonner";
 import { Spinner } from "../spinner";
+
 const roles = [
   { value: "user", label: "User" },
   { value: "admin", label: "Admin" },
 ];
+const UPPERCASE_REGEX = /[A-Z]/;
+const LOWERCASE_REGEX = /[a-z]/;
+const DIGIT_REGEX = /\d/;
+const SYMBOL_REGEX = /[^A-Za-z0-9]/;
+
 export default function SignUpForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const [flow, setFlow] = useState<"signIn" | "signUp">("signUp");
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   const form = useForm<TupFormSchema>({
@@ -63,23 +68,43 @@ export default function SignUpForm() {
     let strength = 0;
 
     // Length-based scoring
-    if (password.length >= 8) strength += 20;
-    if (password.length >= 12) strength += 20;
-    if (password.length >= 16) strength += 20;
+    if (password.length >= 8) {
+      strength += 20;
+    }
+    if (password.length >= 12) {
+      strength += 20;
+    }
+    if (password.length >= 16) {
+      strength += 20;
+    }
 
     // Character variety
-    if (/[A-Z]/.test(password)) strength += 15;
-    if (/[a-z]/.test(password)) strength += 15;
-    if (/\d/.test(password)) strength += 15;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 15; // any symbol
+    if (UPPERCASE_REGEX.test(password)) {
+      strength += 15;
+    }
+    if (LOWERCASE_REGEX.test(password)) {
+      strength += 15;
+    }
+    if (DIGIT_REGEX.test(password)) {
+      strength += 15;
+    }
+    if (SYMBOL_REGEX.test(password)) {
+      strength += 15; // any symbol
+    }
 
     return Math.min(strength, 100);
   }, []);
 
   const getStrengthColor = (strength: number) => {
-    if (strength >= 85) return "bg-green-500";
-    if (strength >= 60) return "bg-yellow-500";
-    if (strength > 0) return "bg-red-500";
+    if (strength >= 85) {
+      return "bg-green-500";
+    }
+    if (strength >= 60) {
+      return "bg-yellow-500";
+    }
+    if (strength > 0) {
+      return "bg-red-500";
+    }
     return "bg-gray-300";
   };
 
@@ -88,7 +113,7 @@ export default function SignUpForm() {
     try {
       // Replace with your sign-up logic
       await signIn("password-custom", {
-        flow,
+        flow: "signIn",
         userName: values.userName,
         email: values.email,
         role: values.role,
@@ -103,10 +128,7 @@ export default function SignUpForm() {
       if (error instanceof ConvexError && error.data === INVALID_PASSWORD) {
         toastTitle = "Invalid password - check the requirements and try again.";
       } else {
-        toastTitle =
-          flow === "signIn"
-            ? "Could not sign in, did you mean to sign up?"
-            : "Could not sign up, did you mean to sign in?";
+        toastTitle = "Could not sign up, did you mean to sign in?";
       }
       toast.error(toastTitle);
     } finally {
@@ -133,8 +155,8 @@ export default function SignUpForm() {
     <section className="flex flex-col gap-5">
       {/* Header */}
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">Create a New Account</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="font-bold text-2xl">Create a New Account</h1>
+        <p className="text-muted-foreground text-sm">
           Enter your email and password to continue.
         </p>
       </header>
@@ -142,9 +164,9 @@ export default function SignUpForm() {
       {/* Form */}
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleSubmit)}
           aria-busy={!!isLoading}
           className="grid gap-3"
+          onSubmit={form.handleSubmit(handleSubmit)}
         >
           <FormField
             control={form.control}
@@ -154,10 +176,10 @@ export default function SignUpForm() {
                 <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
-                    type="text"
-                    placeholder="Username"
-                    disabled={!!isLoading}
                     className="rounded-none"
+                    disabled={!!isLoading}
+                    placeholder="Username"
+                    type="text"
                     {...field}
                   />
                 </FormControl>
@@ -175,10 +197,10 @@ export default function SignUpForm() {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    disabled={!!isLoading}
                     className="rounded-none"
+                    disabled={!!isLoading}
+                    placeholder="you@example.com"
+                    type="email"
                     {...field}
                   />
                 </FormControl>
@@ -193,8 +215,8 @@ export default function SignUpForm() {
               <FormItem>
                 <FormLabel>Role</FormLabel>
                 <Select
-                  onValueChange={field.onChange}
                   defaultValue={field.value}
+                  onValueChange={field.onChange}
                 >
                   <FormControl>
                     <SelectTrigger className="w-full rounded-none">
@@ -204,9 +226,9 @@ export default function SignUpForm() {
                   <SelectContent className="rounded-none">
                     {roles.map((role) => (
                       <SelectItem
-                        value={role.value}
                         className="rounded-none"
                         key={role.value}
+                        value={role.value}
                       >
                         {role.label}
                       </SelectItem>
@@ -232,7 +254,7 @@ export default function SignUpForm() {
                     </FormLabel>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <InfoIcon className="text-muted-foreground h-4 w-4 cursor-pointer" />
+                        <InfoIcon className="h-4 w-4 cursor-pointer text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="max-w-xs text-sm">
@@ -244,21 +266,26 @@ export default function SignUpForm() {
                   </div>
 
                   <span className="text-muted-foreground text-xs">
-                    {passwordStrength >= 85
-                      ? "Strong"
-                      : passwordStrength >= 60
-                      ? "Medium"
-                      : passwordStrength > 0
-                      ? "Weak"
-                      : ""}
+                    {(() => {
+                      if (passwordStrength >= 85) {
+                        return "Strong";
+                      }
+                      if (passwordStrength >= 60) {
+                        return "Medium";
+                      }
+                      if (passwordStrength > 0) {
+                        return "Weak";
+                      }
+                      return "";
+                    })()}
                   </span>
                 </div>
                 <FormControl>
                   <PasswordInput
-                    placeholder="Password"
                     autoComplete="new-password"
                     className="rounded-none"
                     disabled={isLoading === "credentials"}
+                    placeholder="Password"
                     {...field}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const val = e.target.value;
@@ -268,8 +295,8 @@ export default function SignUpForm() {
                   />
                 </FormControl>
                 <Progress
-                  value={passwordStrength}
                   className={`mt-2 h-1 ${getStrengthColor(passwordStrength)}`}
+                  value={passwordStrength}
                 />
 
                 <FormMessage />
@@ -279,9 +306,9 @@ export default function SignUpForm() {
 
           {/* Submit Button */}
           <Button
-            type="submit"
-            disabled={!!isLoading}
             className="w-full cursor-pointer rounded-none"
+            disabled={!!isLoading}
+            type="submit"
           >
             {isLoading === "credentials" ? (
               <Spinner text="Signing up..." />
@@ -293,7 +320,7 @@ export default function SignUpForm() {
       </Form>
 
       {/* Divider */}
-      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
         <span className="relative z-10 bg-background px-2 text-muted-foreground">
           Or continue with
         </span>
@@ -302,23 +329,23 @@ export default function SignUpForm() {
       {/* OAuth Buttons */}
       <div className="flex items-center justify-between gap-2">
         <Button
+          aria-label="Sign in with Google"
+          className="flex-1 rounded-none"
+          disabled={isLoading === "google"}
+          onClick={() => handleOAuthSignIn("google")}
           type="button"
           variant="outline"
-          aria-label="Sign in with Google"
-          onClick={() => handleOAuthSignIn("google")}
-          disabled={isLoading === "google"}
-          className="flex-1 rounded-none"
         >
           <FcGoogle className="text-lg" />
           <span className="ml-2">Google</span>
         </Button>
         <Button
+          aria-label="Sign in with GitHub"
+          className="flex-1 rounded-none"
+          disabled={isLoading === "github"}
+          onClick={() => handleOAuthSignIn("github")}
           type="button"
           variant="outline"
-          aria-label="Sign in with GitHub"
-          onClick={() => handleOAuthSignIn("github")}
-          disabled={isLoading === "github"}
-          className="flex-1 rounded-none"
         >
           <FaGithub className="text-lg" />
           <span className="ml-2">GitHub</span>
@@ -329,12 +356,12 @@ export default function SignUpForm() {
       <p className="text-center text-sm">
         Already have an account?{" "}
         <Link
-          href="/sign-in"
+          aria-disabled={!!isLoading}
           className={cn(
             "transition-all duration-300 hover:underline hover:underline-offset-4",
             isLoading && "pointer-events-none cursor-not-allowed opacity-50"
           )}
-          aria-disabled={!!isLoading}
+          href="/sign-in"
         >
           Sign in
         </Link>
