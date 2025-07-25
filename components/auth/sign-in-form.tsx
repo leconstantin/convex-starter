@@ -21,31 +21,32 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Spinner } from "../spinner";
-import { cn } from "@/lib/utils";
-import { type TupFormSchema, upFormSchema } from "@/lib/schema";
 import { INVALID_PASSWORD } from "@/convex/errors";
+import { inFormSchema, TinFormSchema } from "@/lib/schema";
+import { cn } from "@/lib/utils";
 import { ConvexError } from "convex/values";
+import { Spinner } from "../spinner";
 export default function SignInForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
 
-  const form = useForm<TupFormSchema>({
-    resolver: zodResolver(upFormSchema),
+  const form = useForm<TinFormSchema>({
+    resolver: zodResolver(inFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const handleSubmit = async (values: TupFormSchema) => {
+  const handleSubmit = async (values: TinFormSchema) => {
     setIsLoading("credentials");
     try {
       // Replace with your sign-in logic
       await signIn("password", {
         flow,
+        userName: values.email,
         email: values.email,
         password: values.password,
         redirectTo: "/",
@@ -173,17 +174,17 @@ export default function SignInForm() {
       </div>
 
       {/* OAuth Buttons */}
-      <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between  gap-2">
         <Button
           type="button"
           variant="outline"
           aria-label="Sign in with Google"
           onClick={() => handleOAuthSignIn("google")}
           disabled={isLoading === "google"}
-          className="w-full rounded-none"
+          className="rounded-none flex-1"
         >
           <FcGoogle className="text-lg" />
-          <span className="ml-2">Sign in with Google</span>
+          <span className="ml-2">Google</span>
         </Button>
         <Button
           type="button"
@@ -191,10 +192,10 @@ export default function SignInForm() {
           aria-label="Sign in with GitHub"
           onClick={() => handleOAuthSignIn("github")}
           disabled={isLoading === "github"}
-          className="w-full rounded-none"
+          className="rounded-none flex-1"
         >
           <FaGithub className="text-lg" />
-          <span className="ml-2">Sign in with GitHub</span>
+          <span className="ml-2">GitHub</span>
         </Button>
       </div>
 

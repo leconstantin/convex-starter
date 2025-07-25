@@ -3,16 +3,9 @@ import { v } from "convex/values";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { mutation, query } from "./_generated/server";
 
-async function requireUser(ctx: QueryCtx | MutationCtx) {
-  const userId = await getAuthUserId(ctx);
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-  return userId;
-}
-
 // Helper: Ensure the todo belongs to the user
 import type { Id } from "./_generated/dataModel";
+import { requireUser } from "./users";
 
 async function assertTodoOwner({
   ctx,

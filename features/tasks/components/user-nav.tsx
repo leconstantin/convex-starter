@@ -1,8 +1,8 @@
-import { convexAuthNextjsToken } from '@convex-dev/auth/nextjs/server';
-import { fetchQuery } from 'convex/nextjs';
-import { ThemeToggle } from '@/components/them-toggle';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+import { fetchQuery } from "convex/nextjs";
+import { ThemeToggle } from "@/components/them-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,10 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { api } from '@/convex/_generated/api';
-import { SignOut } from '@/features/authentication/sign-out';
-import profileImg from '@/public/profile.svg';
+} from "@/components/ui/dropdown-menu";
+import { api } from "@/convex/_generated/api";
+import { SignOut } from "@/features/authentication/sign-out";
+import profileImg from "@/public/profile.svg";
+import { DeleteAccountButton } from "@/features/authentication/delete-account";
 
 export async function UserNav() {
   const user = await fetchQuery(
@@ -27,6 +28,8 @@ export async function UserNav() {
   if (!user) {
     return null;
   }
+  // get name if no name get username
+  const name = user.name || user.userName;
 
   return (
     <DropdownMenu>
@@ -34,16 +37,14 @@ export async function UserNav() {
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-9 w-9">
             <AvatarImage alt="@shadcn" src={user.image || profileImg.src} />
-            <AvatarFallback>
-              {user.name?.charAt(0).toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{name?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="font-medium text-sm leading-none">{user.name}</p>
+            <p className="font-medium text-sm leading-none">{name}</p>
             <p className="text-muted-foreground text-xs leading-none">
               {user.email}
             </p>
@@ -64,6 +65,8 @@ export async function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <SignOut />
+        <DropdownMenuSeparator />
+        <DeleteAccountButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

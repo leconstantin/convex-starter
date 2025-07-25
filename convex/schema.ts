@@ -11,10 +11,24 @@ const applicationTables = {
     priority: v.string(),
     dueDate: v.number(), // Store as timestamp
     userId: v.id("users"), // Store the user ID
-  }),
+  }).index("by_userId", ["userId"]),
 };
 
 export default defineSchema({
   ...authTables,
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+    // Custom field.
+    userName: v.optional(v.string()),
+    role: v.optional(v.string()),
+  })
+    .index("email", ["email"])
+    .index("phone", ["phone"]),
   ...applicationTables,
 });

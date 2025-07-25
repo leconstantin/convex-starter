@@ -1,14 +1,7 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from 'convex/react';
-import { format } from 'date-fns';
-import { CalendarIcon, LoaderCircleIcon, PlusCircle } from 'lucide-react';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogClose,
@@ -18,36 +11,42 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { cn } from '@/lib/utils';
-import { labels, priorities, statuses } from './data/data';
-import type { TableTasksTypes } from './data/schema';
-import { TodosFormSchema } from './schema';
-import type { TodosFormValuesType } from './types';
+} from "@/components/ui/select";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "convex/react";
+import { format } from "date-fns";
+import { CalendarIcon, LoaderCircleIcon, PlusCircle } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { labels, priorities, statuses } from "./data/data";
+import type { TableTasksTypes } from "./data/schema";
+import { TodosFormSchema } from "./schema";
+import type { TodosFormValuesType } from "./types";
 
 // in this form you can also edit todos
 
@@ -65,7 +64,7 @@ export function TaskForm({
   const [internalOpen, setInternalOpen] = React.useState(false);
 
   const isControlled =
-    typeof open === 'boolean' && typeof onOpenChange === 'function';
+    typeof open === "boolean" && typeof onOpenChange === "function";
   const actualOpen = isControlled ? open : internalOpen;
   const setOpen = isControlled ? onOpenChange : setInternalOpen;
 
@@ -76,10 +75,10 @@ export function TaskForm({
   const form = useForm<TodosFormValuesType>({
     resolver: zodResolver(TodosFormSchema),
     defaultValues: {
-      title: todo?.title || '',
-      status: todo?.status || '',
-      label: todo?.label || '',
-      priority: todo?.priority || '',
+      title: todo?.title || "",
+      status: todo?.status || "",
+      label: todo?.label || "",
+      priority: todo?.priority || "",
       dueDate: todo?.dueDate ? new Date(todo.dueDate) : undefined,
     },
   });
@@ -88,7 +87,7 @@ export function TaskForm({
     try {
       if (editing && todo) {
         await updateTodo({
-          id: todo._id as Id<'todos'>,
+          id: todo._id as Id<"todos">,
           title: data.title,
           status: data.status,
           label: data.label,
@@ -96,7 +95,7 @@ export function TaskForm({
           dueDate: data.dueDate.getTime(),
         });
 
-        toast.success('Todo updated successfully!');
+        toast.success("Todo updated successfully!");
         form.reset();
         setOpen(false);
         return;
@@ -110,16 +109,16 @@ export function TaskForm({
         dueDate: data.dueDate.getTime(),
       });
 
-      toast.success('Todo created successfully!');
+      toast.success("Todo created successfully!");
       form.reset();
       setOpen(false);
     } catch {
-      toast.error('Failed to create todo');
+      toast.error("Failed to create todo");
     } finally {
       setIsLoading(false);
     }
   }
-  const btnText = editing ? 'Update' : 'Add';
+  const btnText = editing ? "Update" : "Add";
   return (
     <Dialog onOpenChange={setOpen} open={actualOpen}>
       <form>
@@ -133,11 +132,11 @@ export function TaskForm({
         )}
         <DialogContent className="w-full sm:max-w-[425px] md:max-w-2xl ">
           <DialogHeader>
-            <DialogTitle>{editing ? 'Edit Task' : 'Add Task'}</DialogTitle>
+            <DialogTitle>{editing ? "Edit Task" : "Add Task"}</DialogTitle>
             <DialogDescription>
               {editing
-                ? 'Edit your task and save it to your list.'
-                : 'Add a new task to your list.'}
+                ? "Edit your task and save it to your list."
+                : "Add a new task to your list."}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -158,9 +157,7 @@ export function TaskForm({
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is the title of your task.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -193,9 +190,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className="hidden md:block">
-                        This is the status of your task.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -227,9 +222,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className="hidden md:block">
-                        This is the label of your task.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -263,9 +256,7 @@ export function TaskForm({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormDescription className="hidden md:block">
-                        This is the priority of your task.
-                      </FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -281,13 +272,13 @@ export function TaskForm({
                           <FormControl>
                             <Button
                               className={cn(
-                                'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground'
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
                               )}
-                              variant={'outline'}
+                              variant={"outline"}
                             >
                               {field.value ? (
-                                format(field.value, 'PPP')
+                                format(field.value, "PPP")
                               ) : (
                                 <span>Pick a date</span>
                               )}
@@ -300,7 +291,7 @@ export function TaskForm({
                             captionLayout="dropdown"
                             disabled={(selectedDate) =>
                               selectedDate < new Date() ||
-                              selectedDate < new Date('1900-01-01')
+                              selectedDate < new Date("1900-01-01")
                             }
                             mode="single"
                             onSelect={field.onChange}
@@ -308,9 +299,6 @@ export function TaskForm({
                           />
                         </PopoverContent>
                       </Popover>
-                      <FormDescription className="hidden md:block">
-                        This is the due date of your task.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -324,11 +312,11 @@ export function TaskForm({
                   </Button>
                 </DialogClose>
                 <Button disabled={isLoading} type="submit">
-                  {' '}
+                  {" "}
                   {isLoading ? (
                     <>
                       <LoaderCircleIcon className="mr-2 size-4 animate-spin" />
-                      {editing ? 'Updating...' : 'Adding...'}
+                      {editing ? "Updating..." : "Adding..."}
                     </>
                   ) : (
                     btnText
