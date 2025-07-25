@@ -1,13 +1,13 @@
-import { isAuthenticatedNextjs } from '@convex-dev/auth/nextjs/server';
-import type { Metadata } from 'next';
-import { PageContainer } from '@/components/ui/page-container';
-import { UserNav } from '@/features/tasks/components/user-nav';
-import { TaskForm } from '@/features/tasks/task-form';
-import { TodosTable } from '@/features/tasks/todos-table';
+import { PageContainer } from "@/components/ui/page-container";
+import { AuthenticatedTodos } from "@/features/tasks/authenticated-todos";
+import { UserNav } from "@/features/tasks/components/user-nav";
+import { TaskForm } from "@/features/tasks/task-form";
+import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Tasks',
-  description: 'A task and issue tracker build using Tanstack Table.',
+  title: "Tasks",
+  description: "A task and issue tracker build using Tanstack Table.",
 };
 
 // Simulate a database read for tasks.
@@ -33,8 +33,7 @@ export default async function TaskPage() {
           </div>
           <TaskForm />
         </div>
-
-        <TodosTable />
+        <AuthenticatedTodos />
       </div>
     </PageContainer>
   );
