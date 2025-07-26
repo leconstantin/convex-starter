@@ -29,6 +29,7 @@ export default function SignInForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [flow] = useState<"signIn" | "signUp">("signIn");
 
   const form = useForm<TinFormSchema>({
     resolver: zodResolver(inFormSchema),
@@ -42,9 +43,8 @@ export default function SignInForm() {
     setIsLoading("credentials");
     try {
       // Replace with your sign-in logic
-      await signIn("password", {
-        flow: "signIn",
-        userName: values.email,
+      await signIn("password-custom", {
+        flow,
         email: values.email,
         password: values.password,
         redirectTo: "/",

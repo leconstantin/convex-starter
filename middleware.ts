@@ -5,7 +5,8 @@ import {
 } from "@convex-dev/auth/nextjs/server";
 
 const isAuthRouter = createRouteMatcher(["/sign-in"]);
-const isProtectedRouter = createRouteMatcher(["/"]);
+// protect all routes except the auth router
+const isProtectedRouter = createRouteMatcher(["/profile", "/"]);
 
 export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
   const isAuthenticated = await convexAuth.isAuthenticated();

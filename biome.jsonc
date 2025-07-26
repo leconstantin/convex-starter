@@ -9,6 +9,9 @@
       },
       "performance": {
         "noNamespaceImport": "warn"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn"
       }
     }
   }

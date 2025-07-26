@@ -54,6 +54,7 @@ export default function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [flow] = useState<"signIn" | "signUp">("signUp");
 
   const form = useForm<TupFormSchema>({
     resolver: zodResolver(upFormSchema),
@@ -113,7 +114,7 @@ export default function SignUpForm() {
     try {
       // Replace with your sign-up logic
       await signIn("password-custom", {
-        flow: "signIn",
+        flow,
         userName: values.userName,
         email: values.email,
         role: values.role,

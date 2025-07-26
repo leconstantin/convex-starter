@@ -1,6 +1,9 @@
-/** biome-ignore-all lint/nursery/noAwaitInLoop: <explanation> */
-import { authTables, getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { v } from "convex/values";
+import { asyncMap } from "convex-helpers";
+import { internal } from "./_generated/api";
 import {
+  internalMutation,
   type MutationCtx,
   mutation,
   type QueryCtx,
@@ -24,7 +27,7 @@ export const currentUser = query({
   },
 });
 
-export const deleteUser = mutation({
+export const deleteCurrentUserAccount = mutation({
   args: {},
   handler: async (ctx) => {
     const userId = await requireUser(ctx); // or getAuthUserId(ctx)
@@ -34,7 +37,6 @@ export const deleteUser = mutation({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-    const tokenIdentifier = identity.tokenIdentifier;
 
     // Delete all todos linked to this user
     const todos = await ctx.db
@@ -45,28 +47,39 @@ export const deleteUser = mutation({
     const todoDeletePromises = todos.map((todo) => ctx.db.delete(todo._id));
     await Promise.all(todoDeletePromises);
 
-    // Delete from your custom users table
-    const userDoc = await ctx.db
-      .query("users")
-      .withIndex("by_id", (q) => q.eq("_id", userId))
-      .unique();
-
-    if (userDoc) {
-      await ctx.db.delete(userDoc._id);
-    }
-
-    // Delete from all Convex Auth internal tables
-    for (const table of Object.keys(authTables)) {
-      const docs = await ctx.db
-        .query(table as any)
-        .filter((q) => q.eq(q.field("tokenIdentifier"), tokenIdentifier))
-        .collect();
-      for (const doc of docs) {
-        await ctx.db.delete(doc._id);
-      }
-    }
+    await ctx.runMutation(internal.users.deleteUserAccount, {
+      userId,
+    });
 
     return { success: true };
+  },
+});
+export const deleteUserAccount = internalMutation({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    await asyncMap(
+      [
+        "google",
+        "github",
+        "password",
+        "password-custom" /* add other providers as needed */,
+      ],
+      async (provider) => {
+        const authAccount = await ctx.db
+          .query("authAccounts")
+          .withIndex("userIdAndProvider", (q) =>
+            q.eq("userId", args.userId).eq("provider", provider)
+          )
+          .unique();
+        if (!authAccount) {
+          return;
+        }
+        await ctx.db.delete(authAccount._id);
+      }
+    );
+    await ctx.db.delete(args.userId);
   },
 });
 

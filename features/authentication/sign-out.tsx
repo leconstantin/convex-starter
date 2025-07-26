@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
+import { LogOutIcon } from "lucide-react";
 import { useState } from "react";
 import LoadingButton from "@/components/loading-button";
 
@@ -18,7 +19,8 @@ export function SignOut() {
       }}
       size="sm"
     >
-      Sign out
+      Log out
+      <LogOutIcon className="ml-2" />
     </LoadingButton>
   );
 }

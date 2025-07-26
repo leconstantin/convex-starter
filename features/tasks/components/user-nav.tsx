@@ -1,5 +1,6 @@
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
+import Link from "next/link";
 import { ThemeToggle } from "@/components/them-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,6 @@ import {
 import { api } from "@/convex/_generated/api";
 import { SignOut } from "@/features/authentication/sign-out";
 import profileImg from "@/public/profile.svg";
-import { DeleteAccountButton } from "@/features/authentication/delete-account";
 
 export async function UserNav() {
   const user = await fetchQuery(
@@ -52,10 +52,12 @@ export async function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          <Link href="/profile">
+            <DropdownMenuItem>
+              Profile
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -66,7 +68,6 @@ export async function UserNav() {
         <DropdownMenuSeparator />
         <SignOut />
         <DropdownMenuSeparator />
-        <DeleteAccountButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );
