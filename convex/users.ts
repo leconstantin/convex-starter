@@ -64,7 +64,7 @@ export const deleteUserAccount = internalMutation({
         "google",
         "github",
         "password",
-        "password-custom" /* add other providers as needed */,
+        // "password-custom" /* add other providers as needed */,
       ],
       async (provider) => {
         const authAccount = await ctx.db
@@ -83,29 +83,34 @@ export const deleteUserAccount = internalMutation({
   },
 });
 
-// export const deleteUser = mutation({
-//   args: {},
-//   handler: async (ctx) => {
-//     const userId = await requireUser(ctx);
-//     const userDoc = await ctx.db
-//       .query("users")
-//       .withIndex("by_id", (q) => q.eq("_id", userId))
-//       .unique();
-//     const todos = await ctx.db
-//       .query("todos")
-//       .withIndex("by_userId", (q) => q.eq("userId", userId))
-//       .collect();
-//     if (todos) {
-//       for (const todo of todos) {
-//         await ctx.db.delete(todo._id);
-//       }
-//     }
+export const getUser = query({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return;
+    }
+    const user = await ctx.db.get(userId);
+    if (!user) {
+      return;
+    }
 
-//     // Delete the user
-//     if (userDoc) {
-//       await ctx.db.delete(userDoc._id);
-//     }
-//     // Optionally delete other tables
-//     return { success: true };
-//   },
-// });
+    return {
+      ...user,
+      name: user.userName || user.name,
+      avatarUrl: user.imageId
+        ? await ctx.storage.getUrl(user.imageId)
+        : undefined,
+    };
+  },
+});
+
+export const updateUser = mutation({
+  args: {
+    userName: v.string(),
+    role: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await requireUser(ctx);
+    return await ctx.db.patch(userId, args);
+  },
+});

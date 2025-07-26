@@ -43,7 +43,7 @@ export default function SignInForm() {
     setIsLoading("credentials");
     try {
       // Replace with your sign-in logic
-      await signIn("password-custom", {
+      await signIn("password", {
         flow,
         email: values.email,
         password: values.password,

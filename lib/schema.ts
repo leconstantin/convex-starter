@@ -7,9 +7,7 @@ export const inFormSchema = z.object({
 export type TinFormSchema = z.infer<typeof inFormSchema>;
 
 export const upFormSchema = z.object({
-  userName: z.string().min(1, "Username is required"),
   email: z.email().min(1, "Email is required"),
-  role: z.string().min(1, "Role is required"),
   password: z.string().min(1, "Password is required"),
 });
 export type TupFormSchema = z.infer<typeof upFormSchema>;
@@ -23,3 +21,14 @@ export const deleteUserFormSchema = z.object({
     }),
 });
 export type TDeleteUserFormValues = z.infer<typeof deleteUserFormSchema>;
+
+// schema for username and role
+export const userOnboardingSchema = z.object({
+  userName: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  role: z.string().min(1, {
+    message: "Role is required.",
+  }),
+});
+export type TUserOnboardingFormValues = z.infer<typeof userOnboardingSchema>;

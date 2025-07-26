@@ -27,6 +27,7 @@ export default defineSchema({
     // Custom field.
     userName: v.optional(v.string()),
     role: v.optional(v.string()),
+    imageId: v.optional(v.id("_storage")),
   })
     .index("email", ["email"])
     .index("phone", ["phone"]),

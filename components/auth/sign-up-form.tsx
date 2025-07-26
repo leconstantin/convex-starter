@@ -24,13 +24,6 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Progress } from "@/components/ui/progress";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -59,9 +52,7 @@ export default function SignUpForm() {
   const form = useForm<TupFormSchema>({
     resolver: zodResolver(upFormSchema),
     defaultValues: {
-      userName: "",
       email: "",
-      role: "",
       password: "",
     },
   });
@@ -113,11 +104,9 @@ export default function SignUpForm() {
     setIsLoading("credentials");
     try {
       // Replace with your sign-up logic
-      await signIn("password-custom", {
+      await signIn("password", {
         flow,
-        userName: values.userName,
         email: values.email,
-        role: values.role,
         password: values.password,
         redirectTo: "/",
       });
@@ -169,26 +158,6 @@ export default function SignUpForm() {
           className="grid gap-3"
           onSubmit={form.handleSubmit(handleSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="userName"
-            render={({ field }) => (
-              <FormItem className="grid gap-3">
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input
-                    className="rounded-none"
-                    disabled={!!isLoading}
-                    placeholder="Username"
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           {/* Email */}
           <FormField
             control={form.control}
@@ -205,38 +174,6 @@ export default function SignUpForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full rounded-none">
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="rounded-none">
-                    {roles.map((role) => (
-                      <SelectItem
-                        className="rounded-none"
-                        key={role.value}
-                        value={role.value}
-                      >
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
                 <FormMessage />
               </FormItem>
             )}

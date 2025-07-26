@@ -9,7 +9,7 @@ export default async function SiteHeader() {
       <div className="flex items-center justify-between gap-2">
         <Link className="flex items-center gap-2" href="/">
           <ListTodoIcon />
-          <h2 className="font-bold font-mono text-xl italic tracking-tight">
+          <h2 className="font-bold font-mono text-xl italic tracking-tighter">
             Don&apos;t Forget
           </h2>
         </Link>
