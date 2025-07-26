@@ -1,9 +1,9 @@
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import { fetchQuery } from "convex/nextjs";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/them-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { convexAuthNextjsToken } from '@convex-dev/auth/nextjs/server';
+import { fetchQuery } from 'convex/nextjs';
+import Link from 'next/link';
+import { ThemeToggle } from '@/components/them-toggle';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { api } from "@/convex/_generated/api";
-import { SignOut } from "@/features/authentication/sign-out";
-import profileImg from "@/public/profile.svg";
+} from '@/components/ui/dropdown-menu';
+import { api } from '@/convex/_generated/api';
+import { SignOut } from '@/features/auth/sign-out';
+import profileImg from '@/public/profile.svg';
 
 export async function UserNav() {
   const user = await fetchQuery(

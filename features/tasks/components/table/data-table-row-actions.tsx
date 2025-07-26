@@ -21,9 +21,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { api } from '@/convex/_generated/api';
 import type { Id } from '@/convex/_generated/dataModel';
-import { labels, priorities, statuses } from '../data/data';
-import { tableTasksSchema } from '../data/schema';
-import { TaskForm } from '../task-form';
+import { labels, priorities, statuses } from '@/lib/data';
+import { tableTodoSchema } from '@/lib/schema';
+import { TodoForm } from '../todo-form';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,7 +32,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = tableTasksSchema.parse(row.original);
+  const task = tableTodoSchema.parse(row.original);
   const deleteTodo = useMutation(api.todos.remove);
   const updateLabel = useMutation(api.todos.updateLabel);
   const updateStatus = useMutation(api.todos.updateStatus);
@@ -155,7 +155,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <TaskForm editing onOpenChange={setEdit} open={edit} todo={task} />
+      <TodoForm editing onOpenChange={setEdit} open={edit} todo={task} />
     </>
   );
 }

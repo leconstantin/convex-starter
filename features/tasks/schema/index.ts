@@ -15,6 +15,7 @@ export const TodosFormSchema = z.object({
     message: "A due date is required.",
   }),
 });
+export type TodosFormTypes = z.infer<typeof TodosFormSchema>;
 
 export const UpdateTodoSchema = z.object({
   _id: zid("todos"),

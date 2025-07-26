@@ -10,68 +10,68 @@ import {
   TagIcon,
   Timer,
   UserIcon,
-} from 'lucide-react';
+} from "lucide-react";
 
 export const labels = [
   {
-    value: 'personal',
-    label: 'Personal',
+    value: "personal",
+    label: "Personal",
     icon: UserIcon,
   },
   {
-    value: 'work',
-    label: 'Work',
+    value: "work",
+    label: "Work",
     icon: BriefcaseBusinessIcon,
   },
   {
-    value: 'other',
-    label: 'Other',
+    value: "other",
+    label: "Other",
     icon: TagIcon,
   },
 ];
 
 export const statuses = [
   {
-    value: 'backlog',
-    label: 'Backlog',
+    value: "backlog",
+    label: "Backlog",
     icon: HelpCircle,
   },
   {
-    value: 'todo',
-    label: 'Todo',
+    value: "todo",
+    label: "Todo",
     icon: Circle,
   },
   {
-    value: 'in progress',
-    label: 'In Progress',
+    value: "in progress",
+    label: "In Progress",
     icon: Timer,
   },
   {
-    value: 'done',
-    label: 'Done',
+    value: "done",
+    label: "Done",
     icon: CheckCircle,
   },
   {
-    value: 'canceled',
-    label: 'Canceled',
+    value: "canceled",
+    label: "Canceled",
     icon: CircleOff,
   },
 ];
 
 export const priorities = [
   {
-    label: 'Low',
-    value: 'low',
+    label: "Low",
+    value: "low",
     icon: ArrowDown,
   },
   {
-    label: 'Medium',
-    value: 'medium',
+    label: "Medium",
+    value: "medium",
     icon: ArrowRight,
   },
   {
-    label: 'High',
-    value: 'high',
+    label: "High",
+    value: "high",
     icon: ArrowUp,
   },
 ];

@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
-import { useAuthActions } from "@convex-dev/auth/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ConvexError } from "convex/values";
-import { InfoIcon } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useAuthActions } from '@convex-dev/auth/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ConvexError } from 'convex/values';
+import { InfoIcon } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { toast } from 'sonner';
+import { Spinner } from '@/components/spinner';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -19,24 +20,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Progress } from "@/components/ui/progress";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import { Progress } from '@/components/ui/progress';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { INVALID_PASSWORD } from "@/convex/errors";
-import { type TupFormSchema, upFormSchema } from "@/lib/schema";
-import { cn } from "@/lib/utils";
-import { Spinner } from "../spinner";
+} from '@/components/ui/tooltip';
+import { INVALID_PASSWORD } from '@/convex/errors';
+import { type TupFormSchema, upFormSchema } from '@/lib/schema';
+import { cn } from '@/lib/utils';
 
-const roles = [
-  { value: "user", label: "User" },
-  { value: "admin", label: "Admin" },
-];
 const UPPERCASE_REGEX = /[A-Z]/;
 const LOWERCASE_REGEX = /[a-z]/;
 const DIGIT_REGEX = /\d/;
@@ -47,13 +43,13 @@ export default function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [flow] = useState<"signIn" | "signUp">("signUp");
+  const [flow] = useState<'signIn' | 'signUp'>('signUp');
 
   const form = useForm<TupFormSchema>({
     resolver: zodResolver(upFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
   const computeStrength = useCallback((password: string) => {
@@ -89,36 +85,36 @@ export default function SignUpForm() {
 
   const getStrengthColor = (strength: number) => {
     if (strength >= 85) {
-      return "bg-green-500";
+      return 'bg-green-500';
     }
     if (strength >= 60) {
-      return "bg-yellow-500";
+      return 'bg-yellow-500';
     }
     if (strength > 0) {
-      return "bg-red-500";
+      return 'bg-red-500';
     }
-    return "bg-gray-300";
+    return 'bg-gray-300';
   };
 
   const handleSubmit = async (values: TupFormSchema) => {
-    setIsLoading("credentials");
+    setIsLoading('credentials');
     try {
       // Replace with your sign-up logic
-      await signIn("password", {
+      await signIn('password', {
         flow,
         email: values.email,
         password: values.password,
-        redirectTo: "/",
+        redirectTo: '/',
       });
       form.reset();
-      toast.success("Account created successful!");
-      router.push("/");
+      toast.success('Account created successful!');
+      router.push('/');
     } catch (error) {
       let toastTitle: string;
       if (error instanceof ConvexError && error.data === INVALID_PASSWORD) {
-        toastTitle = "Invalid password - check the requirements and try again.";
+        toastTitle = 'Invalid password - check the requirements and try again.';
       } else {
-        toastTitle = "Could not sign up, did you mean to sign in?";
+        toastTitle = 'Could not sign up, did you mean to sign in?';
       }
       toast.error(toastTitle);
     } finally {
@@ -126,10 +122,10 @@ export default function SignUpForm() {
     }
   };
 
-  const handleOAuthSignIn = async (provider: "github" | "google") => {
+  const handleOAuthSignIn = async (provider: 'github' | 'google') => {
     setIsLoading(provider);
     try {
-      await signIn(provider, { redirectTo: "/" });
+      await signIn(provider, { redirectTo: '/' });
     } catch (error) {
       toast.error(
         `${provider} sign-up failed: ${
@@ -206,15 +202,15 @@ export default function SignUpForm() {
                   <span className="text-muted-foreground text-xs">
                     {(() => {
                       if (passwordStrength >= 85) {
-                        return "Strong";
+                        return 'Strong';
                       }
                       if (passwordStrength >= 60) {
-                        return "Medium";
+                        return 'Medium';
                       }
                       if (passwordStrength > 0) {
-                        return "Weak";
+                        return 'Weak';
                       }
-                      return "";
+                      return '';
                     })()}
                   </span>
                 </div>
@@ -222,7 +218,7 @@ export default function SignUpForm() {
                   <PasswordInput
                     autoComplete="new-password"
                     className="rounded-none"
-                    disabled={isLoading === "credentials"}
+                    disabled={isLoading === 'credentials'}
                     placeholder="Password"
                     {...field}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,10 +244,10 @@ export default function SignUpForm() {
             disabled={!!isLoading}
             type="submit"
           >
-            {isLoading === "credentials" ? (
+            {isLoading === 'credentials' ? (
               <Spinner text="Signing up..." />
             ) : (
-              "Sign Up"
+              'Sign Up'
             )}
           </Button>
         </form>
@@ -269,8 +265,8 @@ export default function SignUpForm() {
         <Button
           aria-label="Sign in with Google"
           className="flex-1 rounded-none"
-          disabled={isLoading === "google"}
-          onClick={() => handleOAuthSignIn("google")}
+          disabled={isLoading === 'google'}
+          onClick={() => handleOAuthSignIn('google')}
           type="button"
           variant="outline"
         >
@@ -280,8 +276,8 @@ export default function SignUpForm() {
         <Button
           aria-label="Sign in with GitHub"
           className="flex-1 rounded-none"
-          disabled={isLoading === "github"}
-          onClick={() => handleOAuthSignIn("github")}
+          disabled={isLoading === 'github'}
+          onClick={() => handleOAuthSignIn('github')}
           type="button"
           variant="outline"
         >
@@ -292,12 +288,12 @@ export default function SignUpForm() {
 
       {/* Footer */}
       <p className="text-center text-sm">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link
           aria-disabled={!!isLoading}
           className={cn(
-            "transition-all duration-300 hover:underline hover:underline-offset-4",
-            isLoading && "pointer-events-none cursor-not-allowed opacity-50"
+            'transition-all duration-300 hover:underline hover:underline-offset-4',
+            isLoading && 'pointer-events-none cursor-not-allowed opacity-50'
           )}
           href="/sign-in"
         >

@@ -1,5 +1,17 @@
 import z from "zod";
 
+export const tableTodoSchema = z.object({
+  _id: z.string(),
+  task_id: z.number(),
+  title: z.string(),
+  status: z.string(),
+  label: z.string(),
+  priority: z.string(),
+  dueDate: z.number(),
+});
+
+export type TableTodoTypes = z.infer<typeof tableTodoSchema>;
+
 export const inFormSchema = z.object({
   email: z.email().min(1, "Email is required"),
   password: z.string().min(1, "Password is required"),

@@ -2,8 +2,8 @@
 
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { DataTable } from '@/features/tasks/components/data-table';
-import { columns } from './components/columns';
+import { DataTable } from '@/features/tasks/components/table/data-table';
+import { columns } from './table/columns';
 
 export function TodosTable() {
   const todos = useQuery(api.todos.list) || [];

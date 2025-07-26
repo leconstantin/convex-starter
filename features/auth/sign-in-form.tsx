@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
-import { useAuthActions } from "@convex-dev/auth/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ConvexError } from "convex/values";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useAuthActions } from '@convex-dev/auth/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ConvexError } from 'convex/values';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { toast } from 'sonner';
+import { Spinner } from '@/components/spinner';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,46 +19,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { INVALID_PASSWORD } from "@/convex/errors";
-import { inFormSchema, type TinFormSchema } from "@/lib/schema";
-import { cn } from "@/lib/utils";
-import { Spinner } from "../spinner";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
+import { INVALID_PASSWORD } from '@/convex/errors';
+import { inFormSchema, type TinFormSchema } from '@/lib/schema';
+import { cn } from '@/lib/utils';
 export default function SignInForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const [flow] = useState<"signIn" | "signUp">("signIn");
+  const [flow] = useState<'signIn' | 'signUp'>('signIn');
 
   const form = useForm<TinFormSchema>({
     resolver: zodResolver(inFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
   const handleSubmit = async (values: TinFormSchema) => {
-    setIsLoading("credentials");
+    setIsLoading('credentials');
     try {
       // Replace with your sign-in logic
-      await signIn("password", {
+      await signIn('password', {
         flow,
         email: values.email,
         password: values.password,
-        redirectTo: "/",
+        redirectTo: '/',
       });
       form.reset();
-      toast.success("Sign-in successful!");
-      router.push("/");
+      toast.success('Sign-in successful!');
+      router.push('/');
     } catch (error) {
       let toastTitle: string;
       if (error instanceof ConvexError && error.data === INVALID_PASSWORD) {
-        toastTitle = "Invalid password - check the requirements and try again.";
+        toastTitle = 'Invalid password - check the requirements and try again.';
       } else {
-        toastTitle = "Could not sign in, did you mean to sign up?";
+        toastTitle = 'Could not sign in, did you mean to sign up?';
       }
       toast.error(toastTitle);
     } finally {
@@ -65,10 +65,11 @@ export default function SignInForm() {
     }
   };
 
-  const handleOAuthSignIn = async (provider: "github" | "google") => {
+  const handleOAuthSignIn = async (provider: 'github' | 'google') => {
     setIsLoading(provider);
     try {
-      await signIn(provider, { redirectTo: "/" });
+      await signIn(provider, { redirectTo: '/' });
+      toast.success('Sign-in successful!');
     } catch (error) {
       toast.error(
         `${provider} sign-in failed: ${
@@ -152,10 +153,10 @@ export default function SignInForm() {
             disabled={!!isLoading}
             type="submit"
           >
-            {isLoading === "credentials" ? (
+            {isLoading === 'credentials' ? (
               <Spinner text="Signing in..." />
             ) : (
-              "Sign In"
+              'Sign In'
             )}
           </Button>
         </form>
@@ -173,8 +174,8 @@ export default function SignInForm() {
         <Button
           aria-label="Sign in with Google"
           className="flex-1 rounded-none"
-          disabled={isLoading === "google"}
-          onClick={() => handleOAuthSignIn("google")}
+          disabled={isLoading === 'google'}
+          onClick={() => handleOAuthSignIn('google')}
           type="button"
           variant="outline"
         >
@@ -184,8 +185,8 @@ export default function SignInForm() {
         <Button
           aria-label="Sign in with GitHub"
           className="flex-1 rounded-none"
-          disabled={isLoading === "github"}
-          onClick={() => handleOAuthSignIn("github")}
+          disabled={isLoading === 'github'}
+          onClick={() => handleOAuthSignIn('github')}
           type="button"
           variant="outline"
         >
@@ -196,12 +197,12 @@ export default function SignInForm() {
 
       {/* Footer */}
       <p className="text-center text-sm">
-        Don&apos;t have an account?{" "}
+        Don&apos;t have an account?{' '}
         <Link
           aria-disabled={!!isLoading}
           className={cn(
-            "transition-all duration-300 hover:underline hover:underline-offset-4",
-            isLoading && "pointer-events-none cursor-not-allowed opacity-50"
+            'transition-all duration-300 hover:underline hover:underline-offset-4',
+            isLoading && 'pointer-events-none cursor-not-allowed opacity-50'
           )}
           href="/sign-up"
         >

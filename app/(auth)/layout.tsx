@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="relative hidden bg-muted lg:block">
         <Image
           alt="Image"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover dark:grayscale"
           placeholder="blur"
           src={cImg}
         />
