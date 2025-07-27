@@ -107,7 +107,7 @@ export const getUser = query({
 
 export const updateUser = mutation({
   args: {
-    userName: v.string(),
+    username: v.string(),
     role: v.string(),
   },
   handler: async (ctx, args) => {

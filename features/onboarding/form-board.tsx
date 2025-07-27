@@ -1,11 +1,11 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from 'convex/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,24 +13,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { api } from "@/convex/_generated/api";
+} from '@/components/ui/select';
+import { api } from '@/convex/_generated/api';
 import {
   type TUserOnboardingFormValues,
   userOnboardingSchema,
-} from "@/lib/schema";
+} from '@/lib/schema';
 
 const roles = [
-  { value: "user", label: "User" },
-  { value: "admin", label: "Admin" },
+  { value: 'user', label: 'User' },
+  { value: 'admin', label: 'Admin' },
 ];
 export default function UserOnboardingForm() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function UserOnboardingForm() {
 
   const form = useForm<TUserOnboardingFormValues>({
     resolver: zodResolver(userOnboardingSchema),
-    defaultValues: { userName: "", role: "" },
+    defaultValues: { username: '', role: '' },
   });
 
   const handleSubmit = async (values: TUserOnboardingFormValues) => {
@@ -47,10 +47,10 @@ export default function UserOnboardingForm() {
     try {
       await updateUser(values);
       form.reset();
-      toast.success("User updated successfully!");
-      router.push("/");
+      toast.success('User updated successfully!');
+      router.push('/');
     } catch {
-      toast.error("Failed to update user");
+      toast.error('Failed to update user');
     } finally {
       setIsSubmitting(false);
     }
@@ -64,7 +64,7 @@ export default function UserOnboardingForm() {
       >
         <FormField
           control={form.control}
-          name="userName"
+          name="username"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="sr-only">Username</FormLabel>
@@ -112,7 +112,7 @@ export default function UserOnboardingForm() {
           )}
         />
         <Button className="w-full" disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Loading..." : "Continue"}
+          {isSubmitting ? 'Loading...' : 'Continue'}
         </Button>
       </form>
       <p className="px-6 text-center font-normal text-primary/60 text-sm leading-normal">
