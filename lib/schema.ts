@@ -36,11 +36,33 @@ export type TDeleteUserFormValues = z.infer<typeof deleteUserFormSchema>;
 
 // schema for username and role
 export const userOnboardingSchema = z.object({
-  userName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  username: z
+    .string()
+    .min(3)
+    .max(32)
+    .toLowerCase()
+    .trim()
+    .regex(
+      /^[a-zA-Z0-9]+$/,
+      "Username may only contain alphanumeric characters."
+    ),
   role: z.string().min(1, {
     message: "Role is required.",
   }),
 });
 export type TUserOnboardingFormValues = z.infer<typeof userOnboardingSchema>;
+
+export const usernameFormSchema = z.object({
+  username: z
+    .string()
+    .min(3)
+    .max(32)
+    .toLowerCase()
+    .trim()
+    .regex(
+      /^[a-zA-Z0-9]+$/,
+      "Username may only contain alphanumeric characters."
+    ),
+});
+
+export type TUsernameFormValues = z.infer<typeof usernameFormSchema>;

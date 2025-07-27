@@ -9,6 +9,7 @@ import {
   type QueryCtx,
   query,
 } from "./_generated/server";
+import { username } from "./utils/validators";
 
 export async function requireUser(ctx: QueryCtx | MutationCtx) {
   const userId = await getAuthUserId(ctx);
@@ -99,7 +100,7 @@ export const getUser = query({
       name: user.userName || user.name,
       avatarUrl: user.imageId
         ? await ctx.storage.getUrl(user.imageId)
-        : undefined,
+        : user.image,
     };
   },
 });
@@ -112,5 +113,72 @@ export const updateUser = mutation({
   handler: async (ctx, args) => {
     const userId = await requireUser(ctx);
     return await ctx.db.patch(userId, args);
+  },
+});
+
+export const updateUsername = mutation({
+  args: {
+    username: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return;
+    }
+    const validatedUsername = username.safeParse(args.username);
+
+    if (!validatedUsername.success) {
+      throw new Error(validatedUsername.error.message);
+    }
+    await ctx.db.patch(userId, { userName: validatedUsername.data });
+  },
+});
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("User not found");
+    }
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+export const updateUserImage = mutation({
+  args: {
+    imageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return;
+    }
+    // first get previous image of user and delete it from storage
+    const user = await ctx.db.get(userId);
+    if (!user) {
+      return;
+    }
+    if (user.imageId) {
+      await ctx.storage.delete(user.imageId);
+    }
+    ctx.db.patch(userId, { imageId: args.imageId });
+  },
+});
+export const removeUserImage = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return;
+    }
+    const user = await ctx.db.get(userId);
+    if (!user) {
+      return;
+    }
+    if (user.imageId) {
+      await ctx.storage.delete(user.imageId);
+    }
+    ctx.db.patch(userId, { imageId: undefined, image: undefined });
   },
 });

@@ -29,6 +29,7 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^1.5.0",
+    "@xixixao/uploadstuff": "^0.0.5",
     "chrono-node": "^2.8.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

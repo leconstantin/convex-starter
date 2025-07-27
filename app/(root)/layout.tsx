@@ -1,9 +1,10 @@
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import { fetchQuery } from "convex/nextjs";
-import { redirect } from "next/navigation";
-import SiteHeader from "@/components/site-header";
-import { PageContainer } from "@/components/ui/page-container";
-import { api } from "@/convex/_generated/api";
+import { convexAuthNextjsToken } from '@convex-dev/auth/nextjs/server';
+import { fetchQuery, preloadQuery } from 'convex/nextjs';
+import { redirect } from 'next/navigation';
+import { Navigation } from '@/components/navigation';
+import { PageContainer } from '@/components/ui/page-container';
+import { api } from '@/convex/_generated/api';
+
 export default async function Layout({
   children,
 }: {
@@ -14,18 +15,26 @@ export default async function Layout({
     {},
     { token: await convexAuthNextjsToken() }
   );
+
   if (!user?.userName) {
-    return redirect("/onboarding");
+    return redirect('/onboarding');
   }
+
   if (!user?.role) {
-    return redirect("/onboarding");
+    return redirect('/onboarding');
   }
+
+  const preloadedUser = await preloadQuery(
+    api.users.getUser,
+    {},
+    { token: await convexAuthNextjsToken() }
+  );
   return (
-    <PageContainer className="py-8">
-      <main className="flex flex-col gap-20 md:gap-8">
-        <SiteHeader />
-        {children}
-      </main>
-    </PageContainer>
+    <>
+      <Navigation preloadedUser={preloadedUser} />
+      <PageContainer className="py-8">
+        <main className="flex flex-col gap-20 md:gap-8">{children}</main>
+      </PageContainer>
+    </>
   );
 }
