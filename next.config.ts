@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "keen-skunk-467.convex.cloud",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "rugged-peacock-97.convex.cloud",
+        pathname: "/**",
+      },
     ],
   },
 };

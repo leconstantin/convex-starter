@@ -1,3 +1,3 @@
 export default function AuthPage() {
-  return <div>{/* <UserImage /> */}</div>;
+  return <div>Auth will be added later</div>;
 }
