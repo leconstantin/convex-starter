@@ -2,3 +2,6 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
   - sharp
+
+patchedDependencies:
+  '@xixixao/uploadstuff@0.0.5': patches/@xixixao__uploadstuff@0.0.5.patch

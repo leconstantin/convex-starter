@@ -1,0 +1,13 @@
+diff --git a/lib/useEvent.ts b/lib/useEvent.ts
+index 40645d5a6b82d104b391f7b48a50573f4e3246c0..a2cf2198473e67b683a21510f17e3192ec6c8362 100644
+--- a/lib/useEvent.ts
++++ b/lib/useEvent.ts
+@@ -35,7 +35,7 @@ export function useEvent<TCallback extends AnyFunction>(
+ 
+   // Create a stable callback that always calls the latest callback:
+   // using useRef instead of useCallback avoids creating and empty array on every render
+-  const stableRef = useRef<TCallback>();
++const stableRef = useRef<TCallback | null>(null);
+   if (!stableRef.current) {
+     stableRef.current = function (this: unknown) {
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, prefer-rest-params, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any

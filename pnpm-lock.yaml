@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@xixixao/uploadstuff@0.0.5':
+    hash: 55fb6a4c130f3df9e14969f99f85f3fc972153a7d2540bb3210a737ac9de2867
+    path: patches/@xixixao__uploadstuff@0.0.5.patch
+
 importers:
 
   .:
@@ -64,7 +69,7 @@ importers:
         version: 1.5.0(next@15.4.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@xixixao/uploadstuff':
         specifier: ^0.0.5
-        version: 0.0.5(react-dropzone@14.3.8(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        version: 0.0.5(patch_hash=55fb6a4c130f3df9e14969f99f85f3fc972153a7d2540bb3210a737ac9de2867)(react-dropzone@14.3.8(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       chrono-node:
         specifier: ^2.8.3
         version: 2.8.3
@@ -4466,7 +4471,7 @@ snapshots:
       loupe: 3.1.4
       tinyrainbow: 2.0.0
 
-  '@xixixao/uploadstuff@0.0.5(react-dropzone@14.3.8(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+  '@xixixao/uploadstuff@0.0.5(patch_hash=55fb6a4c130f3df9e14969f99f85f3fc972153a7d2540bb3210a737ac9de2867)(react-dropzone@14.3.8(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
     dependencies:
       react: 19.1.0
       react-dropzone: 14.3.8(react@19.1.0)
