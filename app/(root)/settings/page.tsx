@@ -72,7 +72,7 @@ export default function DashboardSettings() {
           >
             {user.avatarUrl ? (
               <Image
-                alt={user.userName ?? user.email ?? ''}
+                alt={user.username ?? user.email ?? ''}
                 className="h-20 w-20 rounded-full object-cover"
                 height={80}
                 src={user.avatarUrl}

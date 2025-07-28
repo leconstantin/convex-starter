@@ -29,7 +29,7 @@ export async function UserNav() {
     return null;
   }
   // get name if no name get username
-  const name = user.name || user.userName;
+  const name = user.name || user.username;
 
   return (
     <DropdownMenu>

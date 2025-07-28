@@ -97,7 +97,7 @@ export const getUser = query({
 
     return {
       ...user,
-      name: user.userName || user.name,
+      name: user.username || user.name,
       avatarUrl: user.imageId
         ? await ctx.storage.getUrl(user.imageId)
         : user.image,
@@ -130,7 +130,7 @@ export const updateUsername = mutation({
     if (!validatedUsername.success) {
       throw new Error(validatedUsername.error.message);
     }
-    await ctx.db.patch(userId, { userName: validatedUsername.data });
+    await ctx.db.patch(userId, { username: validatedUsername.data });
   },
 });
 

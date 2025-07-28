@@ -25,7 +25,7 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
     // Custom field.
-    userName: v.optional(v.string()),
+    username: v.optional(v.string()),
     role: v.optional(v.string()),
     imageId: v.optional(v.id("_storage")),
   })

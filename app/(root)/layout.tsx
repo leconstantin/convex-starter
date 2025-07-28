@@ -16,7 +16,7 @@ export default async function Layout({
     { token: await convexAuthNextjsToken() }
   );
 
-  if (!user?.userName) {
+  if (!user?.username) {
     return redirect('/onboarding');
   }
 
