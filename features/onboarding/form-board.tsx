@@ -59,7 +59,7 @@ export default function UserOnboardingForm() {
   return (
     <Form {...form}>
       <form
-        className="grid w-full gap-3"
+        className="grid w-full gap-3 px-8"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <FormField
