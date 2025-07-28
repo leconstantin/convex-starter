@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function TodosPage() {
   return (
-    <section className="flex h-full flex-1 flex-col gap-20 md:gap-8">
+    <section className="flex h-full flex-1 flex-col gap-10 md:gap-8">
       <TodoForm />
       <AuthenticatedTodos />
     </section>

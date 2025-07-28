@@ -51,9 +51,9 @@ export function Navigation({
           <Link className="flex h-10 items-center gap-1" href="/">
             <SiTodoist className="size-8" />
           </Link>
-          <Slash className="-rotate-12 h-6 w-6 stroke-[1.5px] text-primary/10" />
+          <Slash className="-rotate-12 hidden h-6 w-6 stroke-[1.5px] text-primary/10 md:flex" />
           <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="hidden md:flex">
               <Button
                 className="gap-2 px-2 data-[state=open]:bg-primary/5"
                 variant="ghost"
@@ -82,7 +82,7 @@ export function Navigation({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="min-w-56 bg-card p-2"
+              className="hidden min-w-56 bg-card p-2 md:flex"
               sideOffset={8}
             >
               <DropdownMenuLabel className="flex items-center font-normal text-primary/60 text-xs">
